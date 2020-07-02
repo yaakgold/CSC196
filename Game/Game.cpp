@@ -2,13 +2,19 @@
 #include "Math/Math.h"
 #include "Math/Random.h"
 #include "Math/Vector2.h"
+#include "Math/Color.h"
 #include <iostream>
 
-const size_t NUM_POINTS = 40;
+using namespace hummus;
+
+const size_t NUM_POINTS = 5;
 float speed = 5;
-float scale = 1;
-std::vector< hum::Vector2> points;
-hum::Vector2 position{ 400.0f, 300.0f };
+float rotSpeed = 3;
+float scale = 4;
+float angle = 0;
+std::vector< Vector2> points = { { 0, -3 }, { 3, 3 }, { 0, 1 }, { -3, 3 }, { 0, -3 } };
+Vector2 position{ 400.0f, 300.0f };
+Color color{1, 0, 0};
 
 
 bool Update(float dt)
@@ -18,32 +24,41 @@ bool Update(float dt)
     int x, y;
     Core::Input::GetMousePos(x, y);
 
-    hum::Vector2 target = hum::Vector2(x, y);
-    hum::Vector2 direction = target - position;
+    Vector2 target = Vector2(x, y);
+    Vector2 direction = target - position;
 
-    position += direction.Normalized() * speed;
+    //position += direction.Normalized() * speed;
 
-    //if (Core::Input::IsPressed(Core::Input::KEY_LEFT) || Core::Input::IsPressed('A')) { position += hum::Vector2{ -1.0f, 0.0f } * speed; }
-    //if (Core::Input::IsPressed(Core::Input::KEY_RIGHT) || Core::Input::IsPressed('D')) { position += hum::Vector2{ 1.0f, 0.0f } * speed; }
-    //if (Core::Input::IsPressed(Core::Input::KEY_UP) || Core::Input::IsPressed('W')) { position += hum::Vector2{ 0.0f, -1.0f } * speed; }
-    //if (Core::Input::IsPressed(Core::Input::KEY_DOWN) || Core::Input::IsPressed('S')) { position += hum::Vector2{ 0.0f, 1.0f } * speed; }
-
-    for (hum::Vector2& point : points)
-    {
-        point = { hum::random(-10.0f, 10.0f), hum::random(-10.0f, 10.0f) };
-    }
+    if (Core::Input::IsPressed(Core::Input::KEY_LEFT) || Core::Input::IsPressed('A')) { angle -= dt * rotSpeed; }
+    if (Core::Input::IsPressed(Core::Input::KEY_RIGHT) || Core::Input::IsPressed('D')) { angle += dt * rotSpeed; }
+    //if (Core::Input::IsPressed(Core::Input::KEY_UP) || Core::Input::IsPressed('W')) { position += Vector2{ 0.0f, -1.0f } * speed; }
+    //if (Core::Input::IsPressed(Core::Input::KEY_DOWN) || Core::Input::IsPressed('S')) { position += Vector2{ 0.0f, 1.0f } * speed; }
 
     return quit;
 }
 
 void Draw(Core::Graphics& graphics)
 {
-    graphics.SetColor(RGB(rand() % 256, rand() % 256, rand() % 256));
+    graphics.SetColor(color);
     
-    for (size_t i = 0; i < NUM_POINTS - 1; i++)
+    for (size_t i = 0; i < points.size() - 1; i++)
     {
-        hum::Vector2 p1 = position + (points[i] * scale);
-        hum::Vector2 p2 = position + (points[i + 1] * scale);
+        //Local / object space points
+        Vector2 p1 = points[i];
+        Vector2 p2 = points[i + 1];
+
+        //transform
+        //scale
+        p1 *= scale;
+        p2 *= scale;
+
+        //rotate
+        p1 = Vector2::Rotate(p1, angle);
+        p2 = Vector2::Rotate(p2, angle);
+
+        //translate
+        p1 += position;
+        p2 += position;
 
         graphics.DrawLine(p1.x, p1.y, p2.x, p2.y);
     }
@@ -51,11 +66,6 @@ void Draw(Core::Graphics& graphics)
 
 int main()
 {
-    for (size_t i = 0; i < 40; i++)
-    {
-        points.push_back({hum::random(0.0f, 800.0f), hum::random(0.0f, 600.0f)});
-    }
-
     char name[] = "CSC196"; 
     Core::Init(name, 800, 600); 
     Core::RegisterUpdateFn(Update); 

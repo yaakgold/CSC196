@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace hum
+namespace hummus
 {
 	struct Vector2
 	{
@@ -40,6 +40,9 @@ namespace hum
 
 		Vector2 operator - () { return Vector2{ -x, -y }; }
 
+		float& operator [] (size_t index) { return (&x)[index]; }
+		const float& operator [] (size_t index) const { return (&x)[index]; }
+
 #pragma endregion
 
 
@@ -51,35 +54,36 @@ namespace hum
 		void Normalize();
 
 		static float Distance(const Vector2& v1, const Vector2& v2);
+		static Vector2 Rotate(const Vector2& v, float rads);
 
 #pragma endregion
 	};
 
 #pragma region Method Implementation
-	float Vector2::Length() const
+	inline float Vector2::Length() const
 	{
 		return std::sqrt((x * x) + (y * y));
 	}
 
-	float Vector2::LengthSqr() const
+	inline float Vector2::LengthSqr() const
 	{
 		return (x * x) + (y * y);
 	}
 
-	float Vector2::Distance(const Vector2& v1, const Vector2& v2)
+	inline float Vector2::Distance(const Vector2& v1, const Vector2& v2)
 	{
 		Vector2 v = v1 - v2;
 		return v.Length();
 	}
 
-	Vector2 Vector2::Normalized() const
+	inline Vector2 Vector2::Normalized() const
 	{
 		float length = Length();
 		Vector2 n = (length == 0.0f) ? Vector2{ 0.0f, 0.0f } : *this / length;
 		return n;
 	}
 
-	void Vector2::Normalize()
+	inline void Vector2::Normalize()
 	{
 		float length = Length();
 		if (length == 0.0f)
@@ -90,6 +94,14 @@ namespace hum
 		{
 			*this /= length;
 		}
+	}
+
+	inline Vector2 Vector2::Rotate(const Vector2& v, float rads)
+	{
+		float x = v.x * std::cos(rads) - v.y * std::sin(rads);
+		float y = v.x * std::sin(rads) + v.y * std::cos(rads);
+
+		return { x, y };
 	}
 #pragma endregion
 }
