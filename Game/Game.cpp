@@ -1,8 +1,9 @@
 #include "core.h"
-#include "Math/Math.h"
+#include "Math/MathFile.h"
 #include "Math/Random.h"
 #include "Math/Vector2.h"
 #include "Math/Color.h"
+#include "Graphics/Shape.h"
 #include <iostream>
 
 using namespace hummus;
@@ -12,9 +13,11 @@ float speed = 5;
 float rotSpeed = 3;
 float scale = 4;
 float angle = 0;
-std::vector< Vector2> points = { { 0, -3 }, { 3, 3 }, { 0, 1 }, { -3, 3 }, { 0, -3 } };
+std::vector< Vector2> points = { { 0, -3 }, { 3, 3 }, { 0, 6 }, { -3, 3 }, { 0, -3 } };
 Vector2 position{ 400.0f, 300.0f };
 Color color{1, 0, 0};
+
+Shape player{ points, color };
 
 
 bool Update(float dt)
@@ -39,29 +42,7 @@ bool Update(float dt)
 
 void Draw(Core::Graphics& graphics)
 {
-    graphics.SetColor(color);
-    
-    for (size_t i = 0; i < points.size() - 1; i++)
-    {
-        //Local / object space points
-        Vector2 p1 = points[i];
-        Vector2 p2 = points[i + 1];
-
-        //transform
-        //scale
-        p1 *= scale;
-        p2 *= scale;
-
-        //rotate
-        p1 = Vector2::Rotate(p1, angle);
-        p2 = Vector2::Rotate(p2, angle);
-
-        //translate
-        p1 += position;
-        p2 += position;
-
-        graphics.DrawLine(p1.x, p1.y, p2.x, p2.y);
-    }
+    player.Draw(graphics, position, scale, angle);
 }
 
 int main()

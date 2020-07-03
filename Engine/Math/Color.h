@@ -49,6 +49,7 @@ namespace hummus
 		COLORREF Pack888() const;
 
 #pragma endregion
+
 	};
 
 #pragma region Method Implementation
