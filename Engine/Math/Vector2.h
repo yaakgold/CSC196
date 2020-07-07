@@ -7,6 +7,12 @@ namespace hummus
 	{
 		float x, y;
 
+		static const Vector2 left;
+		static const Vector2 right;
+		static const Vector2 up;
+		static const Vector2 down;
+		static const Vector2 forward;
+
 		Vector2() : x{ 0 }, y{ 0 } {}
 
 		Vector2(float x, float y) : x{ x }, y{ y } {}

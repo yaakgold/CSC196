@@ -4,12 +4,13 @@
 #include "Math/Vector2.h"
 #include "Math/Color.h"
 #include "Graphics/Shape.h"
+#include <string>
 #include <iostream>
 
 using namespace hummus;
 
 const size_t NUM_POINTS = 5;
-float speed = 5;
+float speed = 200;
 float rotSpeed = 3;
 float scale = 4;
 float angle = 0;
@@ -19,29 +20,45 @@ Color color{1, 0, 0};
 
 Shape player{ points, color };
 
+float frameTime;
 
 bool Update(float dt)
 {
+    frameTime = dt;
+
     bool quit = Core::Input::IsPressed(Core::Input::KEY_ESCAPE);
 
     int x, y;
     Core::Input::GetMousePos(x, y);
 
-    Vector2 target = Vector2(x, y);
-    Vector2 direction = target - position;
+    //Vector2 target = Vector2(x, y);
+    //Vector2 direction = target - position;
 
-    //position += direction.Normalized() * speed;
+    Vector2 force;
+
+    if (Core::Input::IsPressed(Core::Input::KEY_UP) || Core::Input::IsPressed('W')) { force = Vector2::forward * speed * dt; }
+    if (Core::Input::IsPressed(Core::Input::KEY_DOWN) || Core::Input::IsPressed('S')) { force = Vector2::forward * -speed * dt; }
+
+    Vector2 direction = force;
+    direction = Vector2::Rotate(direction, angle);
+    position += direction;
 
     if (Core::Input::IsPressed(Core::Input::KEY_LEFT) || Core::Input::IsPressed('A')) { angle -= dt * rotSpeed; }
     if (Core::Input::IsPressed(Core::Input::KEY_RIGHT) || Core::Input::IsPressed('D')) { angle += dt * rotSpeed; }
-    //if (Core::Input::IsPressed(Core::Input::KEY_UP) || Core::Input::IsPressed('W')) { position += Vector2{ 0.0f, -1.0f } * speed; }
-    //if (Core::Input::IsPressed(Core::Input::KEY_DOWN) || Core::Input::IsPressed('S')) { position += Vector2{ 0.0f, 1.0f } * speed; }
+
+    //if (Core::Input::IsPressed(Core::Input::KEY_LEFT) || Core::Input::IsPressed('A')) { position += Vector2::left * speed * dt; }
+    //if (Core::Input::IsPressed(Core::Input::KEY_RIGHT) || Core::Input::IsPressed('D')) { position += Vector2::right * speed * dt; }
+    
 
     return quit;
 }
 
 void Draw(Core::Graphics& graphics)
 {
+    graphics.SetColor(Color(1, 1, 1));
+    graphics.DrawString(10, 10, std::to_string(frameTime).c_str());
+    graphics.DrawString(10, 20, std::to_string(1.0f / frameTime).c_str());
+
     player.Draw(graphics, position, scale, angle);
 }
 
