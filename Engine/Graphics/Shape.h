@@ -4,6 +4,7 @@
 #include "Math/Vector2.h"
 #include "Math/Color.h"
 #include <vector>
+#include <string>
 
 namespace hummus
 {
@@ -13,6 +14,8 @@ namespace hummus
 
 		Shape() {}
 		Shape(const std::vector<Vector2>& points, const Color& color) : m_points{ points }, m_color{ color } {}
+
+		bool Load(const std::string& fileName);
 
 		void Draw(Core::Graphics& graphics, Vector2 position, float scale = 1.0f, float angle = 0.0f);
 

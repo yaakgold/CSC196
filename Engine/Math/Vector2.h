@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 
 namespace hummus
 {
@@ -48,6 +49,9 @@ namespace hummus
 
 		float& operator [] (size_t index) { return (&x)[index]; }
 		const float& operator [] (size_t index) const { return (&x)[index]; }
+
+		//Streams
+		friend std::istream& operator >> (std::istream& stream, Vector2& v);
 
 #pragma endregion
 

@@ -1,5 +1,35 @@
 #include "pch.h"
 #include "Shape.h"
+#include <fstream>
+
+bool hummus::Shape::Load(const std::string& fileName)
+{
+    bool success = false;
+
+    std::ifstream stream(fileName);
+    if (stream.is_open())
+    {
+        success = true;
+
+        //Read Color
+
+        //Read Points
+        while (!stream.eof())
+        {
+            Vector2 point;
+            stream >> point;
+
+            if (!stream.eof())
+            {
+                m_points.push_back(point);
+            }
+        }
+
+        stream.close();
+    }
+
+    return success;
+}
 
 void hummus::Shape::Draw(Core::Graphics& graphics, Vector2 position, float scale, float angle)
 {
