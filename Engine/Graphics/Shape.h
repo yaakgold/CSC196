@@ -3,6 +3,7 @@
 #include "core.h"
 #include "Math/Vector2.h"
 #include "Math/Color.h"
+#include "Math/Transform.h"
 #include <vector>
 #include <string>
 
@@ -18,6 +19,7 @@ namespace hummus
 		bool Load(const std::string& fileName);
 
 		void Draw(Core::Graphics& graphics, Vector2 position, float scale = 1.0f, float angle = 0.0f);
+		void Draw(Core::Graphics& graphics, const Transform& transform);
 
 		void SetColor(Color color) { m_color = color; }
 

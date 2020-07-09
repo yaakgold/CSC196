@@ -13,6 +13,8 @@ bool hummus::Shape::Load(const std::string& fileName)
 
         //Read Color
 
+        stream >> m_color;
+
         //Read Points
         while (!stream.eof())
         {
@@ -57,3 +59,9 @@ void hummus::Shape::Draw(Core::Graphics& graphics, Vector2 position, float scale
         graphics.DrawLine(p1.x, p1.y, p2.x, p2.y);
     }
 }
+
+void hummus::Shape::Draw(Core::Graphics& graphics, const Transform& transform)
+{
+    Draw(graphics, transform.position, transform.scale, transform.angle);
+}
+

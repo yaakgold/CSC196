@@ -1,31 +1,31 @@
 #include "core.h"
 #include "Math/MathFile.h"
 #include "Math/Random.h"
-#include "Math/Vector2.h"
 #include "Math/Color.h"
+#include "Math/Transform.h"
 #include "Graphics/Shape.h"
+#include "Object/Actor.h"
 #include <string>
 #include <iostream>
 
 using namespace hummus;
 
-const size_t NUM_POINTS = 5;
 float speed = 350;
 float rotSpeed = 3;
-float scale = 4;
-float angle = 0;
-std::vector< Vector2> points = { { 0, -3 }, { 3, 3 }, { 0, 6 }, { -3, 3 }, { 0, -3 } };
-Vector2 position{ 400.0f, 300.0f };
-Color color{1, 0, 0};
 
-Shape player;
-//Shape player{ points, color };
+Shape ship;
+
+Transform transform{ {400, 300}, 4, 0 };
 
 float frameTime;
 float roundTime{ 0 };
 bool gameOver{ false };
 
 DWORD prevTime, deltaTime;
+
+Actor player;
+
+Actor enemy;
 
 bool Update(float dt)
 {
@@ -57,11 +57,11 @@ bool Update(float dt)
     if (Core::Input::IsPressed(Core::Input::KEY_DOWN) || Core::Input::IsPressed('S')) { force = Vector2::forward * -speed * dt; }
 
     Vector2 direction = force;
-    direction = Vector2::Rotate(direction, angle);
-    position += direction;
+    direction = Vector2::Rotate(direction, player.GetTransform().angle);
+    player.GetTransform().position += direction;
 
-    if (Core::Input::IsPressed(Core::Input::KEY_LEFT) || Core::Input::IsPressed('A')) { angle -= dt * rotSpeed; }
-    if (Core::Input::IsPressed(Core::Input::KEY_RIGHT) || Core::Input::IsPressed('D')) { angle += dt * rotSpeed; }
+    if (Core::Input::IsPressed(Core::Input::KEY_LEFT) || Core::Input::IsPressed('A')) { player.GetTransform().angle -= dt * rotSpeed; }
+    if (Core::Input::IsPressed(Core::Input::KEY_RIGHT) || Core::Input::IsPressed('D')) { player.GetTransform().angle += dt * rotSpeed; }
 
     //if (Core::Input::IsPressed(Core::Input::KEY_LEFT) || Core::Input::IsPressed('A')) { position += Vector2::left * speed * dt; }
     //if (Core::Input::IsPressed(Core::Input::KEY_RIGHT) || Core::Input::IsPressed('D')) { position += Vector2::right * speed * dt; }
@@ -78,19 +78,21 @@ void Draw(Core::Graphics& graphics)
 
     if (gameOver) graphics.DrawString(400, 300, "Game Over");
 
-    player.Draw(graphics, position, scale, angle);
+    player.Draw(graphics);
+    enemy.Draw(graphics);
 }
 
 int main()
 {
     prevTime = GetTickCount();
 
-    player.Load("ship.txt");
-    player.SetColor(color);
+    ship.Load("ship.txt");
+    player.Load("player.txt");
+    enemy.Load("enemy.txt");
 
     char name[] = "CSC196"; 
     Core::Init(name, 800, 600); 
-    Core::RegisterUpdateFn(Update); 
+    Core::RegisterUpdateFn(Update);
     Core::RegisterDrawFn(Draw); 
 
     Core::GameLoop();
