@@ -29,6 +29,15 @@ namespace hummus
         return success;
     }
 
+    void Actor::Load(std::istream& stream)
+    {
+        stream >> m_transform;
+
+        std::string shapeName;
+        std::getline(stream, shapeName);
+        m_shape.Load(shapeName);
+    }
+
     void Actor::Update(float dt)
     {
 

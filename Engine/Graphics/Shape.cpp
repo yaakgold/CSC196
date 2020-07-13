@@ -15,16 +15,18 @@ bool hummus::Shape::Load(const std::string& fileName)
 
         stream >> m_color;
 
+        //Get num points
+        std::string line;
+        std::getline(stream, line);
+        size_t size = std::stoi(line);
+
         //Read Points
-        while (!stream.eof())
+        for (size_t i = 0; i < size; i++)
         {
             Vector2 point;
             stream >> point;
 
-            if (!stream.eof())
-            {
-                m_points.push_back(point);
-            }
+            m_points.push_back(point);
         }
 
         stream.close();

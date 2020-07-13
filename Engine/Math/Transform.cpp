@@ -6,8 +6,14 @@ namespace hummus
     std::istream& operator >> (std::istream& stream, Transform& t)
     {
         stream >> t.position;
-        stream >> t.scale;
-        stream >> t.angle;        
+
+        std::string line;
+
+        std::getline(stream, line);
+        t.scale = stof(line);
+
+        std::getline(stream, line);
+        t.angle = std::stof(line);
 
         return stream;
     }
