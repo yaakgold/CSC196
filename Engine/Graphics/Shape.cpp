@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Shape.h"
+#include "Math/Matrix22.h"
 #include <fstream>
 
 bool hummus::Shape::Load(const std::string& fileName)
@@ -39,6 +40,15 @@ void hummus::Shape::Draw(Core::Graphics& graphics, Vector2 position, float scale
 {
     graphics.SetColor(m_color);
 
+    Matrix22 mxScale;
+    mxScale.Scale(scale);
+
+    Matrix22 mxAngle;
+    mxAngle.Rotate(angle);
+
+    Matrix22 mx;
+    mx = mxScale * mxAngle;
+
     for (size_t i = 0; i < m_points.size() - 1; i++)
     {
         //Local / object space points
@@ -46,13 +56,9 @@ void hummus::Shape::Draw(Core::Graphics& graphics, Vector2 position, float scale
         Vector2 p2 = m_points[i + 1];
 
         //transform
-        //scale
-        p1 *= scale;
-        p2 *= scale;
-
-        //rotate
-        p1 = Vector2::Rotate(p1, angle);
-        p2 = Vector2::Rotate(p2, angle);
+        //scale/rotate
+        p1 = p1 * mx;
+        p2 = p2 * mx;
 
         //translate
         p1 += position;
