@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Shape.h"
-#include "Math/Matrix22.h"
+#include "Math/Matrix33.h"
 #include <fstream>
 
 bool hummus::Shape::Load(const std::string& fileName)
@@ -40,14 +40,17 @@ void hummus::Shape::Draw(Core::Graphics& graphics, Vector2 position, float scale
 {
     graphics.SetColor(m_color);
 
-    Matrix22 mxScale;
+    Matrix33 mxScale;
     mxScale.Scale(scale);
 
-    Matrix22 mxAngle;
+    Matrix33 mxAngle;
     mxAngle.Rotate(angle);
 
-    Matrix22 mx;
-    mx = mxScale * mxAngle;
+    Matrix33 mxTranslate;
+    mxTranslate.Translate(position);
+
+    Matrix33 mx;
+    mx = mxScale * mxAngle * mxTranslate;
 
     for (size_t i = 0; i < m_points.size() - 1; i++)
     {
@@ -56,13 +59,9 @@ void hummus::Shape::Draw(Core::Graphics& graphics, Vector2 position, float scale
         Vector2 p2 = m_points[i + 1];
 
         //transform
-        //scale/rotate
+        //scale/rotate/translate
         p1 = p1 * mx;
         p2 = p2 * mx;
-
-        //translate
-        p1 += position;
-        p2 += position;
 
         graphics.DrawLine(p1.x, p1.y, p2.x, p2.y);
     }
@@ -70,6 +69,22 @@ void hummus::Shape::Draw(Core::Graphics& graphics, Vector2 position, float scale
 
 void hummus::Shape::Draw(Core::Graphics& graphics, const Transform& transform)
 {
-    Draw(graphics, transform.position, transform.scale, transform.angle);
+    graphics.SetColor(m_color);
+
+    for (size_t i = 0; i < m_points.size() - 1; i++)
+    {
+        //Local / object space points
+        Vector2 p1 = m_points[i];
+        Vector2 p2 = m_points[i + 1];
+
+        //transform
+        //scale/rotate/translate
+        p1 = p1 * transform.matrix;
+        p2 = p2 * transform.matrix;
+
+        graphics.DrawLine(p1.x, p1.y, p2.x, p2.y);
+    }
+
+    //Draw(graphics, transform.position, transform.scale, transform.angle);
 }
 

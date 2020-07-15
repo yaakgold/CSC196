@@ -18,5 +18,20 @@ namespace hummus
         return stream;
     }
 
+    void Transform::Update()
+    {
+        Matrix33 mxScale;
+        mxScale.Scale(scale);
+
+        Matrix33 mxAngle;
+        mxAngle.Rotate(angle);
+
+        Matrix33 mxTranslate;
+        mxTranslate.Translate(position);
+
+        matrix = mxScale * mxAngle * mxTranslate;
+
+    }
+
 }
 
