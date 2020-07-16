@@ -3,17 +3,24 @@
 
 using namespace hummus;
 
-class Enemy : public Actor
+namespace game
 {
-public:
-	virtual bool Load(const std::string& fileName) override;
+	class Enemy : public Actor
+	{
+	public:
+		virtual bool Load(const std::string& fileName) override;
 
-	virtual void Update(float dt) override;
+		virtual void Update(float dt) override;
 
-	void SetTarget(Actor* actor) { m_target = actor; }
+		void SetTarget(Actor* actor) { m_target = actor; }
 
-protected:
-	float m_thrust{ 0.0f };
-	Actor* m_target{ nullptr };
-	float speed{ 100.0f };
-};
+		void SetThrust(float thrust) { m_thrust = thrust; }
+
+	protected:
+		float m_thrust{ 0.0f };
+		Actor* m_target{ nullptr };
+		float m_rotSpeed{ 0 };
+	};
+
+}
+
