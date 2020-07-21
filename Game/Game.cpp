@@ -4,6 +4,7 @@
 #include "Math/Color.h"
 #include "Math/Transform.h"
 #include "Graphics/Shape.h"
+#include "Graphics/ParticleSystem.h"
 #include "Object/Actor.h"
 #include "Actors/Player.h"
 #include "Actors/Enemy.h"
@@ -20,6 +21,7 @@ namespace game
     unsigned int width{ 800 }, height{ 600 };
 
     Scene scene;
+    ParticleSystem pSystem;
 
     float frameTime;
     float spawnTime{ 0 };
@@ -58,17 +60,10 @@ namespace game
 
         bool quit = Core::Input::IsPressed(Core::Input::KEY_ESCAPE);
 
-        /*if (Core::Input::IsPressed(VK_SPACE))
-        {
-            auto enemiesRemove = GetActors<Enemy>();
-            for (auto enemyRemove : enemiesRemove)
-            {
-                auto iter = std::find(actors.begin(), actors.end(), enemyRemove);
-                delete* iter;
-                actors.erase(iter);
-            }
-        }*/
+        Player* player = scene.GetActor<Player>();
+        pSystem.Create(player->GetTransform().position, player->GetTransform().angle + PI, 20, 1, Color{ 1, 1, 1 }, 1, 100, 200);
 
+        pSystem.Update(dt);
         scene.Update(dt);
 
         spawnTime += dt;
@@ -96,14 +91,15 @@ namespace game
         graphics.SetColor(Color(1, 1, 1));
         graphics.DrawString(10, 10, std::to_string(1.0f / frameTime).c_str());
 
+        pSystem.Draw(graphics);
         scene.Draw(graphics);
 
     }
 
     int main()
     {
-
         scene.Startup();
+        pSystem.Startup();
 
         Player* player = new Player;
         player->Load("player.txt");
@@ -128,6 +124,7 @@ namespace game
         Core::Shutdown();
 
         scene.Shutdown();
+        pSystem.Shutdown();
         return 0;
     }
 }

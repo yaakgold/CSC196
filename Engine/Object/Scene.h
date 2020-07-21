@@ -19,9 +19,9 @@ namespace hummus
 		void RemoveActor(class Actor* object);
 
 		template<typename T>
-		Actor* GetActor() 
+		T* GetActor() 
 		{
-			Actor* result{ nullptr };
+			T* result{ nullptr };
 			for (Actor* actor : m_actors)
 			{
 				result = dynamic_cast<T*>(actor);
