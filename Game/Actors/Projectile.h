@@ -1,14 +1,14 @@
-	#pragma once
+#pragma once
 #include <Object\Actor.h>
 
 using namespace hummus;
 
 namespace game
 {
-	class Enemy : public Actor
+	class Projectile : public Actor
 	{
 	public:
-		virtual eType GetType() { return eType::ENEMY; }
+		virtual eType GetType() { return eType::PROJECTILE; }
 
 		virtual bool Load(const std::string& fileName) override;
 
@@ -16,13 +16,10 @@ namespace game
 
 		virtual void OnCollision(Actor* collision);
 
-		void SetTarget(Actor* actor) { m_target = actor; }
-
 		void SetThrust(float thrust) { m_thrust = thrust; }
 
 	protected:
 		float m_thrust{ 0.0f };
-		Actor* m_target{ nullptr };
 		float m_rotSpeed{ 0 };
 	};
 

@@ -1,4 +1,6 @@
 #include "Player.h"
+#include "Projectile.h"
+#include "Object/Scene.h"
 #include <fstream>
 
 namespace game
@@ -32,6 +34,20 @@ namespace game
 
     void Player::Update(float dt)
     {
+        fireTimer += dt;
+
+        if (Core::Input::IsPressed(VK_SPACE) && fireTimer >= fireRate)
+        {
+            fireTimer = 0;
+            Projectile* proj = new Projectile;
+            proj->Load("projectile.txt");
+            proj->GetTransform().position = m_transform.position;
+            proj->GetTransform().angle = m_transform.angle;
+            proj->SetThrust(100);
+            m_scene->AddActor(proj);
+        }
+
+
         Vector2 force;
 
         if (Core::Input::IsPressed(Core::Input::KEY_UP) || Core::Input::IsPressed('W')) { force = Vector2::forward * thrust; }

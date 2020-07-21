@@ -1,10 +1,10 @@
-#include "Enemy.h"
+#include "Projectile.h"
 #include <fstream>
 #include <Math\MathFile.h>
 
 namespace game
 {
-    bool Enemy::Load(const std::string& fileName)
+    bool Projectile::Load(const std::string& fileName)
     {
         bool success = false;
 
@@ -27,19 +27,19 @@ namespace game
         return success;
     }
 
-    void Enemy::Update(float dt)
+    void Projectile::Update(float dt)
     {
-        Vector2 direction = m_target->GetTransform().position - m_transform.position;
-        Vector2 velocity = direction.Normalized() * m_thrust;
+        Vector2 direction = Vector2::Rotate(Vector2::forward, m_transform.angle);
+        Vector2 velocity = direction * m_thrust;
         m_transform.position += velocity * dt;
-        m_transform.angle = (std::atan2(direction.y, direction.x) + DegsToRads(90)) - (dt * m_rotSpeed);
+        //m_transform.angle = (std::atan2(direction.y, direction.x) + DegsToRads(90)) - (dt * m_rotSpeed);
 
         m_transform.Update();
     }
 
-    void Enemy::OnCollision(Actor* collision)
+    void Projectile::OnCollision(Actor* collision)
     {
-        if (collision->GetType() == eType::PROJECTILE)
+        if (collision->GetType() == eType::ENEMY)
         {
             m_destroy = true;
         }
