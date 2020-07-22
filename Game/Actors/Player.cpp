@@ -1,7 +1,9 @@
 #include "Player.h"
 #include "Projectile.h"
 #include "Object/Scene.h"
+#include "Graphics/ParticleSystem.h"
 #include <fstream>
+#include <Math\MathFile.h>
 
 namespace game
 {
@@ -72,6 +74,11 @@ namespace game
 
         if (m_transform.position.y < 0) m_transform.position.y = 600;
         if (m_transform.position.y > 600) m_transform.position.y = 0;
+
+        if (force.LengthSqr() > 0)
+        {
+            g_particleSystem.Create(m_transform.position, m_transform.angle + PI, 20, 1, Color{ 1, 1, 0 }, 1, 100, 200);
+        }
 
         m_transform.Update();
 

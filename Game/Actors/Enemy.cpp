@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Graphics/ParticleSystem.h"
 #include <fstream>
 #include <Math\MathFile.h>
 
@@ -42,6 +43,11 @@ namespace game
         if (collision->GetType() == eType::PROJECTILE)
         {
             m_destroy = true;
+
+            Color colors[] = { Color::white, Color::blue, Color::yellow, Color::red, Color::green };
+            Color color = colors[rand() % 5];
+
+            g_particleSystem.Create(m_transform.position, 0, 180, 30, color, 1, 100, 200);
         }
     }
 }

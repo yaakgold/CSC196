@@ -14,6 +14,12 @@ namespace hummus
 
 		void Set(float r, float g, float b) { this->r = r; this->g = g; this->b = b; }
 
+		static const Color white;
+		static const Color red;
+		static const Color green;
+		static const Color blue;
+		static const Color yellow;
+
 #pragma region Operator Overloads
 
 		float& operator [] (size_t index) { return (&r)[index]; }

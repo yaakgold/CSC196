@@ -33,6 +33,16 @@ bool hummus::Shape::Load(const std::string& fileName)
         stream.close();
     }
 
+    //Get Radius
+    m_radius = 0;
+    for (size_t i = 0; i < m_points.size(); i++)
+    {
+        //Local / object space points
+        Vector2 p1 = m_points[i];
+        float length = p1.Length();
+        if (length > m_radius) m_radius = length;   
+    }  
+
     return success;
 }
 

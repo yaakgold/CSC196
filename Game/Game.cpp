@@ -21,7 +21,6 @@ namespace game
     unsigned int width{ 800 }, height{ 600 };
 
     Scene scene;
-    ParticleSystem pSystem;
 
     float frameTime;
     float spawnTime{ 0 };
@@ -60,10 +59,18 @@ namespace game
 
         bool quit = Core::Input::IsPressed(Core::Input::KEY_ESCAPE);
 
-        Player* player = scene.GetActor<Player>();
-        pSystem.Create(player->GetTransform().position, player->GetTransform().angle + PI, 20, 1, Color{ 1, 1, 1 }, 1, 100, 200);
+        if (Core::Input::IsPressed(Core::Input::BUTTON_LEFT))
+        {
+            int x, y;
+            Core::Input::GetMousePos(x, y);
 
-        pSystem.Update(dt);
+            Color colors[] = { Color::white, Color::blue, Color::yellow, Color::red, Color::green };
+            Color color = colors[rand() % 5];
+
+            g_particleSystem.Create({ x, y }, 0, 180, 30, color, 1, 100, 200);
+        }
+
+        g_particleSystem.Update(dt);
         scene.Update(dt);
 
         spawnTime += dt;
@@ -91,7 +98,7 @@ namespace game
         graphics.SetColor(Color(1, 1, 1));
         graphics.DrawString(10, 10, std::to_string(1.0f / frameTime).c_str());
 
-        pSystem.Draw(graphics);
+        g_particleSystem.Draw(graphics);
         scene.Draw(graphics);
 
     }
@@ -99,7 +106,7 @@ namespace game
     int main()
     {
         scene.Startup();
-        pSystem.Startup();
+        g_particleSystem.Startup();
 
         Player* player = new Player;
         player->Load("player.txt");
@@ -124,7 +131,7 @@ namespace game
         Core::Shutdown();
 
         scene.Shutdown();
-        pSystem.Shutdown();
+        g_particleSystem.Shutdown();
         return 0;
     }
 }

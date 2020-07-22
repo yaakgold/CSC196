@@ -23,3 +23,5 @@ namespace hummus
 		size_t m_size;
 	};
 }
+
+extern hummus::ParticleSystem g_particleSystem;

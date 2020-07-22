@@ -3,12 +3,14 @@
 #include "Math/Random.h"
 #include "Math/MathFile.h"
 
+hummus::ParticleSystem g_particleSystem;
+
 using namespace hummus;
 
 void ParticleSystem::Startup()
 {
-    m_particles = new Particle[300];
-    m_size = 300;
+    m_size = 3000;
+    m_particles = new Particle[m_size];
 }
 
 void ParticleSystem::Shutdown()
@@ -57,6 +59,7 @@ void ParticleSystem::Create(const Vector2& position, float angle, float angleRan
             p->isActive = true;
             p->lifetime = lifetime;
             p->pos = position;
+            p->prevPos = position;
             p->color = color;
 
             float angleRandom = DegsToRads(random(-angleRange, angleRange));

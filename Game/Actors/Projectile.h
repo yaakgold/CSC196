@@ -21,6 +21,7 @@ namespace game
 	protected:
 		float m_thrust{ 0.0f };
 		float m_rotSpeed{ 0 };
+		float m_lifetime{ 3.0f };
 	};
 
 }

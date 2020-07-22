@@ -28,7 +28,7 @@ void hummus::Scene::Update(float dt)
 		{
 			float dist = Vector2::Distance(actors[i]->GetTransform().position, actors[j]->GetTransform().position);
 
-			if (dist <= 10)//Collision
+			if (dist <= (actors[i]->GetRadius() + actors[j]->GetRadius()))//Collision
 			{
 				actors[i]->OnCollision(actors[j]);
 				actors[j]->OnCollision(actors[i]);
