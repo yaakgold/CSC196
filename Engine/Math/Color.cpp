@@ -8,6 +8,7 @@ namespace hummus
 	const Color Color::green{ 0, 1, 0 };
 	const Color Color::blue{ 0, 0, 1 };
 	const Color Color::yellow{ 1, 1, 0 };
+	const Color Color::purple{ .8f, .2f, 1 };
 
 	std::istream& operator >> (std::istream& stream, Color& c)
 	{

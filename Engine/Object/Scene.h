@@ -4,6 +4,8 @@
 #include <vector>
 #include <list>
 
+class Game;
+
 namespace hummus
 {
 	class Scene
@@ -44,7 +46,11 @@ namespace hummus
 			return results;			
 		}
 
+		void SetGame(Game* game) { m_game = game; }
+		Game* GetGame() { return m_game; }
+
 	private:
+		Game* m_game;
 		std::list<class Actor*> m_actors;
 	};
 }

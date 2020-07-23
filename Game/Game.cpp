@@ -1,142 +1,121 @@
-#include "core.h"
-#include "Math/MathFile.h"
-#include "Math/Random.h"
-#include "Math/Color.h"
-#include "Math/Transform.h"
-#include "Graphics/Shape.h"
-#include "Graphics/ParticleSystem.h"
-#include "Object/Actor.h"
-#include "Actors/Player.h"
-#include "Actors/Enemy.h"
-#include "Object/Scene.h"
-#include <list>
-#include <string>
-#include <iostream>
-#include <vector>
+#include "Game.h"
 
-namespace game
+const int Game::WIDTH = 800;
+const int Game::HEIGHT = 600;
+
+void Game::Startup()
 {
-    using namespace hummus;
+    g_particleSystem.Startup();
+    m_scene.Startup();
+    m_scene.SetGame(this);
+}
 
-    unsigned int width{ 800 }, height{ 600 };
+void Game::Shutdown()
+{
+    m_scene.Shutdown();
+    g_particleSystem.Shutdown();
+}
 
-    Scene scene;
+bool Game::Update(float dt)
+{
+    m_frameTime = dt;
 
-    float frameTime;
-    float spawnTime{ 0 };
+    bool quit = Core::Input::IsPressed(Core::Input::KEY_ESCAPE);
 
-    std::list<Actor*> actors;
-
-    /*template <typename T>
-    Actor* GetActor()
+    switch (m_state)
     {
-        Actor* result{ nullptr };
-        for (Actor* actor : actors)
+    case Game::eState::INIT:
+        break;
+    case Game::eState::TITLE:
+        if (Core::Input::IsPressed(VK_SPACE))
         {
-            result = dynamic_cast<T*>(actor);
-            if (result) break;
+            m_state = eState::START_GAME;
         }
-
-        return result;
-    }
-
-    template <typename T>
-    std::vector<Actor*> GetActors()
+        break;
+    case Game::eState::START_GAME:
     {
-        std::vector<Actor*> results;
-        for (Actor* actor : actors)
-        {
-            T* result = dynamic_cast<T*>(actor);
-            if (result) results.push_back(result);
-        }
-
-        return results;
-    }*/
-
-    bool Update(float dt)
-    {
-        frameTime = dt;
-
-        bool quit = Core::Input::IsPressed(Core::Input::KEY_ESCAPE);
-
-        if (Core::Input::IsPressed(Core::Input::BUTTON_LEFT))
-        {
-            int x, y;
-            Core::Input::GetMousePos(x, y);
-
-            Color colors[] = { Color::white, Color::blue, Color::yellow, Color::red, Color::green };
-            Color color = colors[rand() % 5];
-
-            g_particleSystem.Create({ x, y }, 0, 180, 30, color, 1, 100, 200);
-        }
-
-        g_particleSystem.Update(dt);
-        scene.Update(dt);
-
-        spawnTime += dt;
-        if (spawnTime >= 3)
-        {
-            spawnTime = 0;
-            Enemy* enemy = new Enemy;
-            enemy->Load("enemy.txt");
-            enemy->SetTarget(scene.GetActor<Player>());
-            enemy->GetTransform().position = Vector2{ random(0, width), random(0, height) };
-            enemy->SetThrust(random(100, 150));
-            scene.AddActor(enemy);
-        }
-
-        for (Actor* actor : actors)
-        {
-            actor->Update(dt);
-        }
-    
-        return quit;
-    }
-
-    void Draw(Core::Graphics& graphics)
-    {
-        graphics.SetColor(Color(1, 1, 1));
-        graphics.DrawString(10, 10, std::to_string(1.0f / frameTime).c_str());
-
-        g_particleSystem.Draw(graphics);
-        scene.Draw(graphics);
-
-    }
-
-    int main()
-    {
-        scene.Startup();
-        g_particleSystem.Startup();
-
         Player* player = new Player;
         player->Load("player.txt");
-        scene.AddActor(player);
+        m_scene.AddActor(player);
 
         for (int i = 0; i < 10; i++)
         {
             Enemy* enemy = new Enemy;
             enemy->Load("enemy.txt");
             enemy->SetTarget(player);
-            enemy->GetTransform().position = Vector2{ random(0, width), random(0, height) };
+            enemy->GetTransform().position = Vector2{ random(0, WIDTH), random(0, HEIGHT) };
             enemy->SetThrust(random(100, 150));
-            scene.AddActor(enemy);
+            m_scene.AddActor(enemy);
         }
-
-        char name[] = "CSC196"; 
-        Core::Init(name, width, height); 
-        Core::RegisterUpdateFn(Update);
-        Core::RegisterDrawFn(Draw); 
-
-        Core::GameLoop();
-        Core::Shutdown();
-
-        scene.Shutdown();
-        g_particleSystem.Shutdown();
-        return 0;
+        m_state = eState::GAME;
     }
+        break;
+    case Game::eState::GAME:
+        m_spawnTime += dt;
+        if (m_spawnTime >= 3)
+        {
+            m_spawnTime = 0;
+            Enemy* enemy = new Enemy;
+            enemy->Load("enemy.txt");
+            enemy->SetTarget(m_scene.GetActor<Player>());
+            enemy->GetTransform().position = Vector2{ random(0, WIDTH), random(0, HEIGHT) };
+            enemy->SetThrust(random(100, 150));
+            m_scene.AddActor(enemy);
+        }
+        m_scene.Update(dt);
+        break;
+    case Game::eState::GAME_OVER:
+        break;
+    default:
+        break;
+    }
+
+    if (Core::Input::IsPressed(Core::Input::BUTTON_LEFT))
+    {
+        int x, y;
+        Core::Input::GetMousePos(x, y);
+
+        Color colors[] = { Color::white, Color::blue, Color::yellow, Color::red, Color::green };
+        Color color = colors[rand() % 5];
+
+        g_particleSystem.Create({ x, y }, 0, 180, 30, color, 1, 100, 200);
+    }
+
+    g_particleSystem.Update(dt);
+
+	return quit;
 }
 
-int main()
+void Game::Draw(Core::Graphics& graphics)
 {
-    game::main();
+    graphics.SetColor(Color(1, 1, 1));
+    graphics.DrawString(10, 10, std::to_string(1.0f / m_frameTime).c_str());
+
+    g_particleSystem.Draw(graphics);
+
+    switch (m_state)
+    {
+    case Game::eState::INIT:
+        break;
+    case Game::eState::TITLE:
+        graphics.SetColor(Color::purple);
+        graphics.DrawString(400, 300, "Game Name Here");
+        break;
+    case Game::eState::START_GAME:
+        break;
+    case Game::eState::GAME:
+        m_scene.Draw(graphics);
+
+        graphics.SetColor(Color::white);
+        graphics.DrawString(700, 10, std::to_string(m_score).c_str());
+        break;
+    case Game::eState::GAME_OVER:
+        graphics.SetColor(Color::blue);
+        graphics.DrawString(400, 300, "Game Over");
+        break;
+    default:
+        break;
+    }
+
 }
+

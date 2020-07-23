@@ -3,26 +3,22 @@
 
 using namespace hummus;
 
-namespace game
+class Projectile : public Actor
 {
-	class Projectile : public Actor
-	{
-	public:
-		virtual eType GetType() { return eType::PROJECTILE; }
+public:
+	virtual eType GetType() { return eType::PROJECTILE; }
 
-		virtual bool Load(const std::string& fileName) override;
+	virtual bool Load(const std::string& fileName) override;
 
-		virtual void Update(float dt) override;
+	virtual void Update(float dt) override;
 
-		virtual void OnCollision(Actor* collision);
+	virtual void OnCollision(Actor* collision);
 
-		void SetThrust(float thrust) { m_thrust = thrust; }
+	void SetThrust(float thrust) { m_thrust = thrust; }
 
-	protected:
-		float m_thrust{ 0.0f };
-		float m_rotSpeed{ 0 };
-		float m_lifetime{ 3.0f };
-	};
-
-}
+protected:
+	float m_thrust{ 0.0f };
+	float m_rotSpeed{ 0 };
+	float m_lifetime{ 3.0f };
+};
 
