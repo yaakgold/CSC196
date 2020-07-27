@@ -19,6 +19,7 @@ namespace hummus
 
 		void AddActor(class Actor* actor);
 		void RemoveActor(class Actor* object);
+		void RemoveAllActors();
 
 		template<typename T>
 		T* GetActor() 
@@ -36,7 +37,7 @@ namespace hummus
 		template <typename T>
 		std::vector<T*> GetActors() 
 		{
-			std::vector<Actor*> results;
+			std::vector<T*> results;
 			for (Actor* actor : m_actors)
 			{
 				T* result = dynamic_cast<T*>(actor);

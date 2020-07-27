@@ -33,5 +33,12 @@ namespace hummus
 
     }
 
+    void Transform::Update(const Matrix33& mat)
+    {
+        Update();
+
+        matrix = matrix * mat;
+    }
+
 }
 

@@ -1,4 +1,6 @@
 #include "Game.h"
+#include "Actors/Locator.h"
+#include "Audio/AudioSystem.h"
 
 const int Game::WIDTH = 800;
 const int Game::HEIGHT = 600;
@@ -8,6 +10,9 @@ void Game::Startup()
     g_particleSystem.Startup();
     m_scene.Startup();
     m_scene.SetGame(this);
+
+    g_audioSystem.AddAudio("Laser", "Laser.wav");
+    g_audioSystem.AddAudio("Explosion", "Explosion.wav");
 }
 
 void Game::Shutdown()
@@ -30,12 +35,18 @@ bool Game::Update(float dt)
         if (Core::Input::IsPressed(VK_SPACE))
         {
             m_state = eState::START_GAME;
+            m_score = 0;
+            m_lives = 3;
         }
         break;
     case Game::eState::START_GAME:
     {
         Player* player = new Player;
         player->Load("player.txt");
+        Locator* locator = new Locator;
+        locator->GetTransform().position = Vector2{ 0, 4 };
+        player->SetChild(locator);
+
         m_scene.AddActor(player);
 
         for (int i = 0; i < 10; i++)
@@ -62,13 +73,43 @@ bool Game::Update(float dt)
             enemy->SetThrust(random(100, 150));
             m_scene.AddActor(enemy);
         }
-        m_scene.Update(dt);
+        break;
+    case Game::eState::PLAYER_DEAD:
+    {
+        //auto enemies = m_scene.GetActors<Enemy>();
+
+        //for (Enemy* e : enemies)
+        //{
+        //    e->SetTarget(nullptr);
+        //}
+
+        m_lives--;
+        m_state = (m_lives <= 0) ? eState::GAME_OVER : eState::GAME_WAIT;
+        m_stateTime = 3;
+    }
+        break;
+    case Game::eState::GAME_WAIT:
+        m_stateTime -= dt;
+        if (m_stateTime <= 0)
+        {
+            m_scene.RemoveAllActors();
+            m_state = eState::START_GAME;
+        }
         break;
     case Game::eState::GAME_OVER:
+        m_stateTime -= dt;
+        if (m_stateTime <= 0)
+        {
+            m_scene.RemoveAllActors();
+            m_state = eState::TITLE;
+        }
         break;
     default:
         break;
     }
+    
+    g_audioSystem.Update(dt);
+    m_scene.Update(dt);
 
     if (Core::Input::IsPressed(Core::Input::BUTTON_LEFT))
     {
@@ -104,10 +145,6 @@ void Game::Draw(Core::Graphics& graphics)
     case Game::eState::START_GAME:
         break;
     case Game::eState::GAME:
-        m_scene.Draw(graphics);
-
-        graphics.SetColor(Color::white);
-        graphics.DrawString(700, 10, std::to_string(m_score).c_str());
         break;
     case Game::eState::GAME_OVER:
         graphics.SetColor(Color::blue);
@@ -117,5 +154,10 @@ void Game::Draw(Core::Graphics& graphics)
         break;
     }
 
+    graphics.SetColor(Color::white);
+    graphics.DrawString(700, 10, std::to_string(m_score).c_str());
+    graphics.DrawString(700, 20, ("LIVES: " + std::to_string(m_lives)).c_str());
+
+    m_scene.Draw(graphics);
 }
 

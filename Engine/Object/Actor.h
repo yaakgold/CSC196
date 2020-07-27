@@ -14,7 +14,8 @@ namespace hummus
 		{
 			PLAYER,
 			ENEMY,
-			PROJECTILE
+			PROJECTILE,
+			LOCATOR
 		};
 	public:
 		Actor() {}
@@ -40,11 +41,21 @@ namespace hummus
 		void SetDestroy(bool destroy = true) { m_destroy = destroy; }
 		bool GetDestroy() { return m_destroy; }
 
+		void SetChild(Actor* child) { m_child = child; child->m_parent = this; }
+		void SetParent(Actor* parent) { m_parent = parent; parent->m_child = this; }
+
+		Actor* GetChild() { return m_child; }
+		Actor* GetParent() { return m_parent; }
+
 	protected:
 		bool m_destroy{ false };
 		Scene* m_scene{ nullptr };
 
 		Transform m_transform;
 		Shape m_shape;
+
+		Actor* m_child{ nullptr };
+		Actor* m_parent{ nullptr };
+
 	};
 }

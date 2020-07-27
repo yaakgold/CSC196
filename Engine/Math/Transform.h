@@ -16,6 +16,7 @@ namespace hummus
 		Transform(const Vector2& pos, float scale = 1, float angle = 0) : position{ pos }, scale{ scale }, angle{ angle } {}
 
 		void Update();
+		void Update(const Matrix33& mat);
 
 		//Overload methods
 		//Streams

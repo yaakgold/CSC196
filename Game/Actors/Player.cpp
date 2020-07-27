@@ -3,12 +3,17 @@
 #include "Object/Scene.h"
 #include "../Game.h"
 #include "Graphics/ParticleSystem.h"
+#include "Audio/AudioSystem.h"
 #include <fstream>
+#include <filesystem>
+#include <iostream>
 #include <Math\MathFile.h>
 
 
 bool Player::Load(const std::string& fileName)
 {
+    //std::cout << std::filesystem::current_path();
+
     bool success = false;
 
     std::ifstream stream(fileName);
@@ -41,11 +46,11 @@ void Player::Update(float dt)
     if (Core::Input::IsPressed(VK_SPACE) && fireTimer >= fireRate)
     {
         fireTimer = 0;
+        g_audioSystem.PlayAudio("Laser");
         Projectile* proj = new Projectile;
         proj->Load("projectile.txt");
         proj->GetTransform().position = m_transform.position;
         proj->GetTransform().angle = m_transform.angle;
-        proj->SetThrust(100);
         m_scene->AddActor(proj);
     }
 
@@ -77,10 +82,16 @@ void Player::Update(float dt)
 
     if (force.LengthSqr() > 0)
     {
-        g_particleSystem.Create(m_transform.position, m_transform.angle + PI, 20, 1, Color{ 1, 1, 0 }, 1, 100, 200);
+        Actor* locator = m_child;
+        g_particleSystem.Create(locator->GetTransform().position, locator->GetTransform().angle + PI, 20, 1, Color{ 1, 1, 0 }, 1, 100, 200);
     }
 
     m_transform.Update();
+
+    if (m_child)
+    {
+        m_child->Update(dt);
+    }
 
 }
 
@@ -88,6 +99,17 @@ void Player::OnCollision(Actor* collision)
 {
     if (collision->GetType() == eType::ENEMY)
     {
-        m_scene->GetGame()->SetState(Game::eState::GAME_OVER);
+        m_scene->GetGame()->SetState(Game::eState::PLAYER_DEAD);
+        m_destroy = true;
+
+        auto enemies = m_scene->GetActors<Enemy>();
+
+        for (Enemy* e : enemies)
+        {
+            e->SetTarget(nullptr);
+        }
+
+        g_audioSystem.PlayAudio("Explosion");
+        g_particleSystem.Create(m_transform.position, 0, 180, 30, m_shape.GetColor(), 1, 100, 200);
     }
 }

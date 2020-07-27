@@ -24,6 +24,8 @@ public:
 		INIT,
 		TITLE,
 		START_GAME,
+		PLAYER_DEAD,
+		GAME_WAIT,
 		GAME,
 		GAME_OVER
 	};
@@ -47,6 +49,7 @@ protected:
 
 	float m_frameTime;
 	float m_spawnTime{ 0 };
+	float m_stateTime{ 0 };
 
 public:
 	static const int WIDTH, HEIGHT;

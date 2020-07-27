@@ -1,5 +1,6 @@
 #include "core.h"
 #include "Game.h"
+#include "Audio/AudioSystem.h"
 
 namespace game
 {
@@ -17,6 +18,7 @@ namespace game
 
     int main()
     {
+        g_audioSystem.Startup();
         g.Startup();
 
         char name[] = "CSC196"; 
@@ -27,6 +29,7 @@ namespace game
         Core::GameLoop();
         Core::Shutdown();
 
+        g_audioSystem.Shutdown();
         g.Shutdown();
 
         return 0;
