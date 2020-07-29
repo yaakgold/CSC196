@@ -40,6 +40,8 @@ public:
 	void AddScore(int score) { m_score += score; }
 	void SetState(eState state) { m_state = state; }
 
+	void CreatePickup();
+
 protected:
 	eState m_state{ eState::TITLE };
 	int m_lives{ 3 };

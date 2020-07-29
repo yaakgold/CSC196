@@ -32,6 +32,9 @@
     <ClCompile Include="Actors\Locator.cpp">
       <Filter>Actors</Filter>
     </ClCompile>
+    <ClCompile Include="Actors\Pickups.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actors\Player.h">
@@ -47,6 +50,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Actors\Locator.h">
+      <Filter>Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors\Pickups.h">
       <Filter>Actors</Filter>
     </ClInclude>
   </ItemGroup>

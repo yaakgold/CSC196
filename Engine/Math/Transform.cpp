@@ -30,7 +30,6 @@ namespace hummus
         mxTranslate.Translate(position);
 
         matrix = mxScale * mxAngle * mxTranslate;
-
     }
 
     void Transform::Update(const Matrix33& mat)

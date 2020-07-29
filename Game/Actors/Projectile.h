@@ -6,7 +6,10 @@ using namespace hummus;
 class Projectile : public Actor
 {
 public:
-	virtual eType GetType() { return eType::PROJECTILE; }
+	Projectile() { m_type = eType::PROJECTILE; }
+	Projectile(eType type) { m_type = type; }
+
+	virtual eType GetType() { return m_type; }
 
 	virtual bool Load(const std::string& fileName) override;
 
@@ -19,6 +22,8 @@ public:
 protected:
 	float m_thrust{ 0.0f };
 	float m_rotSpeed{ 0 };
-	float m_lifetime{ 3.0f };
+	float m_lifetime{ 1.5f };
+
+	eType m_type;
 };
 

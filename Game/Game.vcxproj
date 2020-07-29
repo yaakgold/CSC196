@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="Actors\Enemy.cpp" />
     <ClCompile Include="Actors\Locator.cpp" />
+    <ClCompile Include="Actors\Pickups.cpp" />
     <ClCompile Include="Actors\Player.cpp" />
     <ClCompile Include="Actors\Projectile.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -166,6 +167,7 @@
   <ItemGroup>
     <ClInclude Include="Actors\Enemy.h" />
     <ClInclude Include="Actors\Locator.h" />
+    <ClInclude Include="Actors\Pickups.h" />
     <ClInclude Include="Actors\Player.h" />
     <ClInclude Include="Actors\Projectile.h" />
     <ClInclude Include="Game.h" />

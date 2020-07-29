@@ -55,6 +55,21 @@ namespace hummus
 			m[0][2] = v.x;	m[1][2] = v.y;	m[2][2] = 1;
 		}
 
+		Vector2 GetPosition() const
+		{
+			return { m[0][2], m[1][2] };
+		}
+
+		Vector2 GetScale() const
+		{
+			return { m[0][0], m[1][1] };
+		}
+
+		float GetAngle() const
+		{
+			return std::atan2(m[1][0], m[0][0]);
+		}
+
 		Matrix33 operator * (const Matrix33& mat)
 		{
 			Matrix33 result;
@@ -93,14 +108,5 @@ namespace hummus
 
 			return result;
 		}
-
-		/*friend Vector2& operator *= (Vector2& v, const Matrix22& mat)
-		{
-			v.x = v.x * mat.m[0][0] + v.y * mat.m[0][1];
-			v.y = v.x * mat.m[1][0] + v.y * mat.m[1][1];
-
-			return v;
-		}*/
-
 	};
 }

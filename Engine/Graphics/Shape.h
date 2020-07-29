@@ -25,6 +25,7 @@ namespace hummus
 
 		const Color& GetColor() const { return m_color; }
 		float GetRadius() { return m_radius; }
+		int GetNumPoints() { return m_points.size(); }
 
 	private:
 		std::vector<Vector2> m_points;

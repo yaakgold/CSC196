@@ -13,7 +13,6 @@ bool hummus::Shape::Load(const std::string& fileName)
         success = true;
 
         //Read Color
-
         stream >> m_color;
 
         //Get num points
@@ -93,6 +92,7 @@ void hummus::Shape::Draw(Core::Graphics& graphics, const Transform& transform)
         p2 = p2 * transform.matrix;
 
         graphics.DrawLine(p1.x, p1.y, p2.x, p2.y);
+
     }
 
     //Draw(graphics, transform.position, transform.scale, transform.angle);

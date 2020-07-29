@@ -20,6 +20,7 @@ namespace hummus
 		static const Color blue;
 		static const Color yellow;
 		static const Color purple;
+		static const Color orange;
 
 #pragma region Operator Overloads
 

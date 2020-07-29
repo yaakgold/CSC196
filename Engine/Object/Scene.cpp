@@ -36,6 +36,7 @@ void hummus::Scene::Update(float dt)
 	{
 		if ((*iter)->GetDestroy())
 		{
+			(*iter)->Destroy();
 			delete* iter;
 			iter = m_actors.erase(iter);
 		}
